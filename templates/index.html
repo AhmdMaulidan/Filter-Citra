@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program Filter Citra</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #111;
+            color: white;
+            font-family: Arial, sans-serif;
+            padding-bottom: 80px;
+        }
+
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background-color: #000;
+            width: 250px;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            z-index: 1050;
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        .sidebar h4,
+        .sidebar ul {
+            padding: 20px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .sidebar ul li:hover,
+        .sidebar ul li.active {
+            background-color: #444;
+        }
+
+        .main-content {
+            margin-left: 0;
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-content.shifted {
+            margin-left: 250px;
+        }
+
+        .image-box {
+            border: 2px solid white;
+            height: 450px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #222;
+            margin: auto;
+        }
+
+        .image-box img {
+            max-height: 100%;
+            max-width: 100%;
+        }
+
+        .download-btn-wrapper {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .bottom-controls {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* Batasi lebar dan pusatkan elemen input file */
+        .bottom-controls input[type="file"] {
+            background-color: white;
+            color: black;
+            padding: 5px;
+            border-radius: 5px;
+            max-width: 300px;
+            /* Tambahan */
+            width: 100%;
+            /* Supaya fleksibel dalam ukuran */
+        }
+
+        /* Agar tombol serasi ukurannya */
+        .bottom-controls button {
+            background-color: #666;
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 5px;
+            height: 38px;
+            /* Sama tinggi dengan input */
+        }
+
+        .contentbody {
+            margin-left: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <div id="sidebar" class="sidebar">
+            <h4><i class="fas fa-bars me-2"></i> Program Filter</h4>
+            <ul id="filterList">
+                <li data-filter="threshold" class="active">Threshold</li>
+                <li data-filter="sobel">Sobel</li>
+                <li data-filter="prewit">Prewit</li>
+                <li data-filter="roberts">Roberts</li>
+                <li data-filter="canny">Canny</li>
+                <li data-filter="erosion">Erosi</li>
+                <li data-filter="dilation">Dilusi</li>
+                <li data-filter="morph_boundary">Morph Boundary</li>
+                <li data-filter="morph_regionfilling">Morph Regionfilling</li>
+                <li data-filter="morph_skeletonizing">Morph Skeletonizing</li>
+                <li data-filter="morph_convexHull">Morph ConvexHull</li>
+                <li data-filter="morph_pruning">Morph Prunning</li>
+                <li data-filter="morph_thickening">Morph Thickening</li>
+                <li data-filter="morph_thinning">Morph Thinning</li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div id="main" class="container main-content">
+            <button class="btn btn-dark mt-3" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <div class="contentbody">
+                <h1 class="text-center my-4" id="filterTitle">Filter Threshold</h1>
+
+                <div class="row justify-content-center text-center mb-4">
+                    <div class="col-md-5 mb-3">
+                        <h5>Image Before Prosses</h5>
+                        <div class="image-box">
+                            <img id="originalImage" src="#" alt="Original">
+                        </div>
+                    </div>
+                    <div class="col-md-5 mb-3">
+                        <h5>Image After Prosses</h5>
+                        <div class="image-box">
+                            <img id="processedImage" src="#" alt="Processed">
+                        </div>
+                        <div class="download-btn-wrapper">
+                            <a id="downloadLink" class="btn btn-secondary d-none">Download</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- File Upload & Apply -->
+                <div class="bottom-controls">
+                    <input type="file" class="form-control" id="fileInput">
+                    <button id="applyBtn">Terapkan</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const main = document.getElementById('main');
+        const fileInput = document.getElementById('fileInput');
+        const applyBtn = document.getElementById('applyBtn');
+        const downloadLink = document.getElementById('downloadLink');
+        const originalImage = document.getElementById('originalImage');
+        const processedImage = document.getElementById('processedImage');
+        const filterList = document.getElementById('filterList');
+        const filterTitle = document.getElementById('filterTitle');
+
+        let currentFilter = 'threshold';
+        let currentFile = null;
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+            main.classList.toggle('shifted');
+        }
+
+        filterList.addEventListener('click', function (e) {
+            if (e.target.tagName === 'LI') {
+                document.querySelectorAll('#filterList li').forEach(el => el.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.getAttribute('data-filter');
+                filterTitle.innerText = 'Filter ' + e.target.innerText;
+            }
+        });
+
+        fileInput.addEventListener('change', function (e) {
+            currentFile = e.target.files[0];
+            originalImage.src = URL.createObjectURL(currentFile);
+        });
+
+        applyBtn.addEventListener('click', async () => {
+            if (!currentFile) return alert('Pilih gambar terlebih dahulu');
+            const formData = new FormData();
+            formData.append('file', currentFile);
+            formData.append('operation', currentFilter);
+
+            const response = await fetch('/', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            processedImage.src = `/static/processed/${data.processed_filename}?t=${new Date().getTime()}`;
+            downloadLink.href = `/download/${data.processed_filename}`;
+            downloadLink.classList.remove('d-none');
+
+        });
+
+        applyBtn.addEventListener('click', async () => {
+            if (!currentFile) return alert('Pilih gambar terlebih dahulu');
+            const formData = new FormData();
+            formData.append('file', currentFile);
+            formData.append('operation', currentFilter); // Kirim operasi yang dipilih
+
+            const response = await fetch('/', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            processedImage.src = `/static/processed/${data.processed_filename}?t=${new Date().getTime()}`;
+            downloadLink.href = `/download/${data.processed_filename}`;
+            downloadLink.classList.remove('d-none');
+        });
+
+    </script>
+</body>
+
+</html>
