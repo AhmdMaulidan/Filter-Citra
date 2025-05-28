@@ -37,3 +37,6 @@ Berikut daftar fitur yang tersedia di sidebar aplikasi:
 - OpenCV
 - HTML/CSS
 - JavaScript (jika digunakan)
+
+##### build with love❤️
+
