@@ -36,7 +36,7 @@ Berikut daftar fitur yang tersedia di sidebar aplikasi:
 - Python (Flask)
 - OpenCV
 - HTML/CSS
-- JavaScript (jika digunakan)
+- JavaScript(jika digunakan)
 
 ##### build with love❤️
 
