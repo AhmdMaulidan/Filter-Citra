@@ -10,7 +10,7 @@ Aplikasi web ini merupakan **program pengolahan citra digital** yang dilengkapi 
 
 ## 🔧 Fitur Utama
 
-Berikut daftar fitur yang tersedia di sidebar aplikasi:
+Berikut daftar fitur yang tersedia di sidebar aplikasi :
 
 ### 1. **Deteksi Tepi**
 - **Threshold**: Mengubah gambar ke dalam bentuk biner (hitam-putih) berdasarkan ambang batas tertentu.
