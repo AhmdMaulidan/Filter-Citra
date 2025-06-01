@@ -30,7 +30,7 @@ Berikut daftar fitur yang tersedia di sidebar aplikasi :
 - **Morph ConvexHull**: Menghitung dan menampilkan bentuk cembung (convex hull) dari objek.
 - **Morph Prunning**: Menghilangkan cabang kecil pada skeleton objek.
 - **Morph Thickening**: Menebalkan objek dalam bentuk morfologi.
-- **Morph Thinning**: Menipiskan objek hingga hanya garis tengah yang tersisa..
+- **Morph Thinning**: Menipiskan objek hingga hanya garis tengah yang tersisa.
 
 ## 🚀 Teknologi yang Digunakan
 - Python (Flask)
