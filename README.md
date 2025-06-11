@@ -38,5 +38,5 @@ Berikut daftar fitur yang tersedia di sidebar aplikasi :
 - HTML/CSS
 - JavaScript(jika digunakan)
 
-##### build with love, Ghea, Indah❤️
+##### build with love, Ghea❤️
 
